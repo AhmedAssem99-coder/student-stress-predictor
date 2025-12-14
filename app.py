@@ -110,12 +110,14 @@ html, body {{
   color: var(--primary);
   font-size: 28px;
   font-weight: 800;
-  margin-bottom: 6px;
+  margin-top: 20px;    /* تعديل علشان العنوان ما يتقصش */
+  margin-bottom: 12px; /* مسافة تحت */
 }}
 .subtitle {{
   text-align: center;
   color: var(--muted);
   font-size: 14px;
+  margin-bottom: 20px; /* تعديل علشان يظهر كامل */
 }}
 .section-title {{
   color: var(--text);
@@ -166,6 +168,10 @@ if "last_result" not in st.session_state:
 # =====================================================
 st.markdown("<div class='h1'>📊 نظام توقع الضغط والتركيز الدراسي</div>", unsafe_allow_html=True)
 st.markdown("<div class='subtitle'>واجهة تفاعلية لتحليل الأنماط وتقديم توصيات بسيطة وعملية</div>", unsafe_allow_html=True)
+st.markdown("<hr class='custom' />", unsafe_allow_html=True)
+
+# فاصل يخلي العنوان يظهر كامل قبل التبويبات
+st.write("")
 st.markdown("<hr class='custom' />", unsafe_allow_html=True)
 
 # =====================================================
