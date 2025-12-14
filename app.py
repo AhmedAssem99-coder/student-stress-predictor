@@ -20,13 +20,15 @@ st.set_page_config(
 # =====================================================
 # Styling
 # =====================================================
-PRIMARY = "#4CAF50"
-ACCENT = "#1E88E5"
+PRIMARY = "#1E88E5"   # أزرق أنيق
+ACCENT = "#4CAF50"    # أخضر متناسق
 DANGER = "#E53935"
 WARNING = "#FB8C00"
 SUCCESS = "#43A047"
-BG = "#f9fafb"
-TEXT = "#333"
+BG = "#f6f8fb"
+CARD_BG = "#ffffff"
+TEXT = "#2b2b2b"
+MUTED = "#6b7280"
 
 st.markdown(f"""
 <style>
@@ -37,17 +39,94 @@ st.markdown(f"""
   --warning: {WARNING};
   --success: {SUCCESS};
   --bg: {BG};
+  --card: {CARD_BG};
   --text: {TEXT};
+  --muted: {MUTED};
 }}
-body {{ background-color: var(--bg); color: var(--text); }}
-.stButton>button {{
-  background-color: var(--primary);
-  color: white; border-radius: 8px; border: none; padding: 0.5rem 1rem;
+html, body {{
+  background-color: var(--bg);
+  color: var(--text);
+}}
+.block-container {{
+  padding-top: 0.75rem !important;
+  max-width: 1200px !important;
+}}
+/* Tabs */
+.stTabs [role="tablist"] {{
+  gap: 8px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 0.75rem;
 }}
 .stTabs [role="tab"] {{
-  background-color: #eef6ff; color: #000; padding: 8px; border-radius: 5px; margin-right: 6px;
+  background-color: #eef6ff;
+  color: #111827;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
 }}
-.block-container {{ padding-top: 1rem; }}
+.stTabs [aria-selected="true"] {{
+  background-color: var(--primary) !important;
+  color: #ffffff !important;
+}}
+/* Buttons */
+.stButton>button {{
+  background-color: var(--accent);
+  color: #ffffff;
+  border-radius: 8px;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+}}
+.stButton>button:hover {{
+  background-color: #3da14e;
+}}
+/* Metrics */
+[data-testid="stMetricValue"] {{
+  color: var(--primary);
+  font-weight: 700;
+}}
+/* Cards */
+.card {{
+  background: var(--card);
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 12px 14px;
+}}
+.card-accent {{
+  border-left: 6px solid var(--primary);
+}}
+.card-danger {{
+  border-left: 6px solid var(--danger);
+}}
+.card-warning {{
+  border-left: 6px solid var(--warning);
+}}
+.card-success {{
+  border-left: 6px solid var(--success);
+}}
+/* Headers */
+.h1 {{
+  text-align: center;
+  color: var(--primary);
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 6px;
+}}
+.subtitle {{
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}}
+.section-title {{
+  color: var(--text);
+  font-weight: 800;
+}}
+hr.custom {{
+  border: none;
+  height: 1px;
+  background: #e5e7eb;
+  margin: 12px 0;
+}}
 </style>
 """, unsafe_allow_html=True)
 
@@ -81,6 +160,13 @@ if meta_file.exists():
 # =====================================================
 if "last_result" not in st.session_state:
     st.session_state.last_result = None
+
+# =====================================================
+# Header banner (تنسيق فقط)
+# =====================================================
+st.markdown("<div class='h1'>📊 نظام توقع الضغط والتركيز الدراسي</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>واجهة تفاعلية لتحليل الأنماط وتقديم توصيات بسيطة وعملية</div>", unsafe_allow_html=True)
+st.markdown("<hr class='custom' />", unsafe_allow_html=True)
 
 # =====================================================
 # Helpers
@@ -142,25 +228,23 @@ tab_results, tab_weekly, tab_form, tab_analysis = st.tabs([
 # =====================================================
 with tab_form:
     st.subheader("📝 Questionnaire | الاستبيان")
+    st.markdown("<div class='card card-accent'>أدخل بياناتك بدقة لتحصل على نتائج أوضح. يمكنك تعديل المدخلات لملاحظة تأثيرها فورًا.</div>", unsafe_allow_html=True)
 
     with st.form("questionnaire_form"):
         q_anxiety = st.select_slider(
             "هل شعرت بالقلق خلال الأسبوع الماضي؟",
             options=["أبدًا", "قليلًا", "أحيانًا", "كثيرًا", "دائمًا"]
         )
-
         q_depression = st.select_slider(
             "هل شعرت بانخفاض في المزاج أو فقدان الاهتمام؟",
             options=["أبدًا", "قليلًا", "أحيانًا", "كثيرًا", "دائمًا"]
         )
-
         sleep_quality = st.slider("عدد ساعات النوم يوميًا", 0, 10, 7)
         academic_performance = st.slider("المعدل التراكمي GPA", 0.0, 4.0, 2.5)
         q_support = st.select_slider(
             "مستوى الدعم الاجتماعي",
             options=["ضعيف جدًا", "ضعيف", "متوسط", "جيد", "قوي"]
         )
-
         submit_q = st.form_submit_button("🔍 تنبأ")
 
     if submit_q:
@@ -212,8 +296,8 @@ with tab_form:
             st.progress(focus_pct, text=f"Focus score: {focus_pct}%")
 
         st.markdown(f"""
-        <div style="margin-top:0.5rem;padding:0.75rem;border-left:6px solid {color};background:#fff;border-radius:8px">
-        <b>ملاحظة:</b> النتائج مبنية على المدخلات الحالية، جرّب تعديل النوم أو الدعم الاجتماعي وشاهد التغييرات فورًا.
+        <div class="card" style="margin-top:0.5rem;border-left:6px solid {color}">
+          <b>ملاحظة:</b> النتائج مبنية على المدخلات الحالية. عدّل النوم أو الدعم الاجتماعي ولاحظ التغييرات فورًا.
         </div>
         """, unsafe_allow_html=True)
 
@@ -247,8 +331,11 @@ with tab_results:
         if r["depression"] > 15:
             recs.append("📋 قسّم المهام الكبيرة إلى خطوات صغيرة مع راحات قصيرة.")
 
-        for rec in recs:
-            st.write(rec)
+        if recs:
+            st.markdown("<div class='card card-accent'>", unsafe_allow_html=True)
+            for rec in recs:
+                st.markdown(f"- {rec}")
+            st.markdown("</div>", unsafe_allow_html=True)
     else:
         st.info("قم بالتنبؤ من تبويب الاستبيان أولًا لعرض النتائج هنا.")
 
@@ -284,9 +371,9 @@ with tab_weekly:
         st.markdown("### تطور المؤشرات بمرور الوقت")
         c1, c2 = st.columns(2)
         with c1:
-            st.line_chart(df_plot.set_index("date")[["stress_score"]], height=240)
+            st.line_chart(df_plot.set_index("date")[["stress_score"]], height=240, use_container_width=True)
         with c2:
-            st.line_chart(df_plot.set_index("date")[["focus_score"]], height=240)
+            st.line_chart(df_plot.set_index("date")[["focus_score"]], height=240, use_container_width=True)
     else:
         st.info("لا توجد بيانات محفوظة بعد. احفظ أول حالة لبدء التتبع.")
 
@@ -322,8 +409,9 @@ with tab_analysis:
         st.markdown("### Feature Importance")
         fi = pd.read_csv(fi_path)
         fig, ax = plt.subplots(figsize=(6, 3 + 0.3 * len(fi)))
-        sns.barplot(x="importance", y="feature", data=fi, ax=ax, palette="Blues_r")
-        ax.set_title("Feature Importance")
+        # تحسين شكلي فقط لإزالة التحذير المستقبلي: إضافة hue بدون تغيير البيانات
+        sns.barplot(x="importance", y="feature", data=fi, ax=ax, palette="Blues_r", hue="feature", legend=False)
+        ax.set_title("Feature Importance", fontsize=13, color=PRIMARY)
         ax.set_xlabel("Importance")
         ax.set_ylabel("Feature")
         fig.tight_layout()
