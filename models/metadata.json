@@ -1,0 +1,21 @@
+{
+  "model_file": "stress_model_20251214T142313Z.joblib",
+  "best_params": {
+    "model__max_depth": 10,
+    "model__max_features": "sqrt",
+    "model__min_samples_leaf": 1,
+    "model__n_estimators": 300
+  },
+  "best_cv_accuracy": 0.890909090909091,
+  "test_accuracy": 0.8909090909090909,
+  "train_rows": 880,
+  "test_rows": 220,
+  "features": [
+    "anxiety_level",
+    "depression",
+    "sleep_quality",
+    "academic_performance",
+    "social_support"
+  ],
+  "timestamp_utc": "20251214T142313Z"
+}

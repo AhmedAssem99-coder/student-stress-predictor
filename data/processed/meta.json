@@ -1,0 +1,15 @@
+{
+  "n_rows": 1100,
+  "features": [
+    "anxiety_level",
+    "depression",
+    "sleep_quality",
+    "academic_performance",
+    "social_support",
+    "sleep_support_interaction",
+    "mental_load_index"
+  ],
+  "seed": 42,
+  "test_size": 0.2,
+  "val_size": 0.1
+}
